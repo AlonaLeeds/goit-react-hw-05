@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import MovieList from '../../components/MovieList/MovieList'
 import styles from './HomePage.module.css'
+import API_KEY from '../../api'
 
 const HomePage = () => {
   const [movies, setMovies] = useState([])
@@ -12,7 +13,7 @@ const HomePage = () => {
         'https://api.themoviedb.org/3/trending/movie/day',
         {
           headers: {
-            Authorization: '263a5dbfd9de323ddf614647be65270d',
+            Authorization: `Bearer ${API_KEY}`,
           },
         }
       )

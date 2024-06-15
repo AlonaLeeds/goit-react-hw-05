@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import styles from './MovieReviews.module.css'
+import API_KEY from '../../../api'
 
 const MovieReviews = () => {
   const { movieId } = useParams()
@@ -13,7 +14,7 @@ const MovieReviews = () => {
         `https://api.themoviedb.org/3/movie/${movieId}/reviews`,
         {
           headers: {
-            Authorization: 'Bearer YOUR_API_TOKEN',
+            Authorization: `Bearer ${API_KEY}`,
           },
         }
       )

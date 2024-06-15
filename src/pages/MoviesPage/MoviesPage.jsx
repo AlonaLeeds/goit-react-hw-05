@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import MovieList from '../../components/MovieList/MovieList'
 import styles from './MoviesPage.module.css'
+import API_KEY from '../../api'
 
 const MoviesPage = () => {
   const [query, setQuery] = useState('')
@@ -13,7 +14,7 @@ const MoviesPage = () => {
       `https://api.themoviedb.org/3/search/movie?query=${query}`,
       {
         headers: {
-          Authorization: 'Bearer YOUR_API_TOKEN',
+          Authorization: `Bearer ${API_KEY}`,
         },
       }
     )

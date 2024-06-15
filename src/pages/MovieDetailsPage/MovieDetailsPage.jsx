@@ -2,6 +2,7 @@ import React, { useEffect, useState, Suspense, lazy } from 'react'
 import { useParams, Route, Routes, Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import styles from './MovieDetailsPage.module.css'
+import API_KEY from '../../../api'
 
 const MovieCast = lazy(() => import('../../components/MovieCast/MovieCast'))
 const MovieReviews = lazy(() => import('../../components/MovieReviews/MovieReviews'))
@@ -17,7 +18,7 @@ const MovieDetailsPage = () => {
         `https://api.themoviedb.org/3/movie/${movieId}`,
         {
           headers: {
-            Authorization: 'Bearer YOUR_API_TOKEN',
+            Authorization: `Bearer ${API_KEY}`,
           },
         }
       )

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import styles from './MovieCast.module.css'
+import API_KEY from '../../api.js'
 
 const MovieCast = () => {
   const { movieId } = useParams()
@@ -13,7 +14,7 @@ const MovieCast = () => {
         `https://api.themoviedb.org/3/movie/${movieId}/credits`,
         {
           headers: {
-            Authorization: '263a5dbfd9de323ddf614647be65270d',
+            Authorization: `Bearer ${API_KEY}`,
           },
         }
       )
