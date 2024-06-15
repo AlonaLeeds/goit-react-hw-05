@@ -13,7 +13,7 @@ const MovieCast = () => {
         `https://api.themoviedb.org/3/movie/${movieId}/credits`,
         {
           headers: {
-            Authorization: 'Bearer YOUR_API_TOKEN',
+            Authorization: '263a5dbfd9de323ddf614647be65270d',
           },
         }
       )
