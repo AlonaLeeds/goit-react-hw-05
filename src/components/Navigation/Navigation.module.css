@@ -1,0 +1,15 @@
+/* src/components/Navigation/Navigation.module.css */
+.nav {
+   display: flex;
+   gap: 10px;
+}
+
+.link {
+   text-decoration: none;
+   color: black;
+}
+
+.active {
+   font-weight: bold;
+   color: red;
+}
