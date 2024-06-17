@@ -1,71 +1,54 @@
-// import React, { useEffect, useState } from 'react'
-// import { useParams } from 'react-router-dom'
-// import axios from 'axios'
-// import styles from './MovieReviews.module.css'
-// import API_KEY from '../../../api'
-
-// const MovieReviews = () => {
-//   const { movieId } = useParams()
-//   const [reviews, setReviews] = useState([])
-
-//   useEffect(() => {
-//     const fetchReviews = async () => {
-//       const response = await axios.get(
-//         `https://api.themoviedb.org/3/movie/${movieId}/reviews`,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${API_KEY}`,
-//           },
-//         }
-//       )
-//       setReviews(response.data.results)
-//     }
-//     fetchReviews()
-//   }, [movieId])
-
-//   return (
-//     <div className={styles.reviews}>
-//       {reviews.map(review => (
-//         <div key={review.id} className={styles.review}>
-//           <h3>{review.author}</h3>
-//           <p>{review.content}</p>
-//         </div>
-//       ))}
-//     </div>
-//   )
-// }
-
-// export default MovieReviews
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import styles from './MovieReviews.module.css';
-import { getReviewsById } from '../../../api';  // Импортируйте функцию
+import css from './MovieReviews.module.css';
+import { getReviewsById } from '../../api/movies-api';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import Loader from '../../components/Loader/Loader';
 
 const MovieReviews = () => {
   const { movieId } = useParams();
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState(null);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    const fetchReviews = async () => {
+    if (!movieId) return;
+
+    async function fetchReviewsById() {
       try {
+        setIsError(false);
         const data = await getReviewsById(movieId);
         setReviews(data.results);
-      } catch (err) {
-        console.error('Failed to fetch reviews:', err);
+      } catch (error) {
+        setIsError(true);
       }
-    };
+    }
 
-    fetchReviews();
+    fetchReviewsById();
   }, [movieId]);
 
+  if (isError) {
+    return <ErrorMessage />;
+  }
+
+  if (!reviews) {
+    return <Loader />;
+  }
+
+  if (reviews.length === 0) {
+    return <div>We don't have reviews for this movie.</div>;
+  }
+
   return (
-    <div className={styles.reviews}>
-      {reviews.map(review => (
-        <div key={review.id} className={styles.review}>
-          <h3>{review.author}</h3>
-          <p>{review.content}</p>
-        </div>
-      ))}
+    <div>
+      {isError && <ErrorMessage />}
+      <ul className={css.reviews_list}>
+        {reviews.map(review => (
+          <li key={review.id}>
+            <h3>Author: {review.author}</h3>
+            <p>{review.content}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

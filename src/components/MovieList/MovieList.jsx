@@ -1,19 +1,25 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import styles from './MovieList.module.css'
-import ImageCard from '../ImageCard/ImageCard'
+import React from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import css from './MovieList.module.css';
 
-const MovieList = ({ movies, onClick }) => (
-  <ul className={styles.list}>
-    {movies.map(movie => (
-      <ImageCard key={movie.id} image={movie} onClick={onClick} />
-    ))}
-  </ul>
-)
+const MovieList = ({ movies }) => {
+  const location = useLocation();
 
-MovieList.propTypes = {
-  movies: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onClick: PropTypes.func.isRequired,
-}
+  return (
+    <ul className={css.list}>
+      {movies.map((movie) => (
+        <li key={movie.id}>
+          <NavLink
+            className={css.listItem}
+            to={`/movies/${movie.id}`}
+            state={{ from: location }}
+          >
+            {movie.title}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  );
+};
 
-export default MovieList
+export default MovieList;
