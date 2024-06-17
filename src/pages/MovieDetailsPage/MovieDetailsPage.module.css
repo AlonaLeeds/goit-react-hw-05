@@ -1,0 +1,14 @@
+/* src/components/MovieDetails/MovieDetails.module.css */
+.details {
+   border: 1px solid #ccc;
+   padding: 20px;
+   margin-top: 20px;
+   width: 100%;
+   max-width: 500px;
+}
+
+.poster {
+   width: 100%;
+   max-width: 300px;
+   margin-top: 20px;
+}
