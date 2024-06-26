@@ -40,7 +40,7 @@ const MovieDetailsPage = ()=> {
   return (
     <div>
       <NavLink className={css.back_link} to={goBack.current}>
-        <RiArrowGoBackFill />&nbsp;Go Back
+        <RiArrowGoBackFill />&nbsp;Go to Home page
       </NavLink>
       {isError && <ErrorMessage />}
       {isLoading && <Loader />}
