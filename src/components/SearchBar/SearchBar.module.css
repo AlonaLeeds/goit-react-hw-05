@@ -1,0 +1,49 @@
+.searchbar {
+  display: flex;
+  align-items: stretch;
+
+  margin-bottom: 10px;
+
+  background: rgb(140, 140, 152);
+}
+
+.search_panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+
+  margin-left: auto;
+  margin-right: auto;
+  padding: 8px;
+}
+
+.search_field {
+  position: relative;
+
+  min-width: 250px;
+  height: 40px;
+  padding-left: 16px;
+
+  font-size: 16px;
+
+  outline: none;
+  border: none;
+  border-radius: 4px;
+}
+
+.searchBtn {
+  height: 42px;
+
+  outline: none;
+  border: none;
+
+  cursor: pointer;
+}
+
+.searchBtn:hover,
+.searchBtn:focus {
+  outline: none;
+  border: none;
+  color: rgb(140, 140, 152);
+}

@@ -1,43 +1,56 @@
-import React, { useState } from 'react';
-import MovieList from '../../components/MovieList/MovieList';
-import css from './MoviesPage.module.css';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
 import { getMovies } from '../../api/movies-api';
+import SearchBar from '../../components/SearchBar/SearchBar';
+import MovieList from '../../components/MovieList/MovieList';
+import Loader from '../../components/Loader/Loader';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import css from '../MoviesPage/MoviesPage.module.css';
+
 
 const MoviesPage = () => {
-  const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
-  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [notFound, setNotFound] = useState(false);
 
-  const handleSearch = async (event) => {
-    event.preventDefault();
-    try {
-      const data = await getMovies(query);
-      setMovies(data.results || []);
-      setError(null);  // Clear previous error if any
-    } catch (err) {
-      console.error('API request error:', err);
-      setError('Something went wrong. Please try again.');  // Set error message
+  useEffect(() => {
+    const query = searchParams.get('query') ?? '';
+    if (query.trim() === '') {
+      return;
     }
+    async function fetchMovies() {
+      try {
+        setIsLoading(true);
+        setIsError(false);
+        const data = await getMovies(query);
+        setMovies(data.results);
+        setNotFound(data.results.length === 0);
+      } catch {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMovies();
+  }, [searchParams]);
+
+  const handleSubmit = async value => {
+    setSearchParams({ query: value });
   };
 
   return (
-    <div className={css.container}>
-      <form onSubmit={handleSearch} className={css.form}>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search movies"
-          className={css.input}
-        />
-        <button type="submit" className={css.button}>
-          Search
-        </button>
-      </form>
-      {error && <p className={css.error}>{error}</p>}
-      <MovieList movies={movies} />
+    <div>
+      <SearchBar onSearch={handleSubmit} />
+      {isError && <ErrorMessage />}
+      {!isLoading && !isError && <MovieList movies={movies} />}
+      {isLoading && <Loader />}
+      {notFound && <p className={css.text}>Sorry. Nothing is found with your request ... 😭</p>}
     </div>
   );
-};
+}
 
 export default MoviesPage;

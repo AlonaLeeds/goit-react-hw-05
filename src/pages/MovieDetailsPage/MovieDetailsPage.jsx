@@ -1,64 +1,92 @@
-import React, { useEffect, useState, Suspense, lazy } from 'react';
-import { useParams, Route, Routes, Link, useNavigate } from 'react-router-dom';
-import css from './MovieDetailsPage.module.css';
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, Outlet, useLocation, useParams } from 'react-router-dom';
 import { getMovieById } from '../../api/movies-api';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import Loader from '../../components/Loader/Loader';
+import css from './MovieDetailsPage.module.css';
+import { RiArrowGoBackFill } from "react-icons/ri";
+import { defaultImg } from '../../api/helpers';
 
-const MovieCast = lazy(() => import('../../components/MovieCast/MovieCast'));
-const MovieReviews = lazy(() => import('../../components/MovieReviews/MovieReviews'));
-
-const MovieDetailsPage = () => {
+const MovieDetailsPage = ()=> {
   const { movieId } = useParams();
-  const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const location = useLocation();
+  const goBack = useRef(location?.state ?? '/movies');
 
   useEffect(() => {
-    const fetchMovieDetails = async () => {
+    if (!movieId) return;
+
+    async function fetchMovieById() {
       try {
+        setIsLoading(true);
+        setIsError(false);
         const data = await getMovieById(movieId);
         setMovie(data);
-      } catch (err) {
-        console.error('Failed to fetch movie details:', err);
+      } catch (error) {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
       }
-    };
-
-    fetchMovieDetails();
+    }
+    fetchMovieById();
   }, [movieId]);
 
-  if (!movie) return <p>Loading...</p>;
+    const getYear = releaseDate => {
+    return releaseDate ? releaseDate.split('-')[0] : 'Unknown Year';
+  };
 
   return (
-    <div className={css.container}>
-      <button onClick={() => navigate(-1)} className={css.button}>
-        Go back
-      </button>
-      <div className={css.movieDetails}>
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
-          className={css.image}
-        />
-        <div className={css.details}>
-          <h2>{movie.title}</h2>
-          <p>{movie.overview}</p>
-          <ul className={css.additionalInfo}>
-            <li>
-              <Link to={`cast`} className={css.link}>Cast</Link>
-            </li>
-            <li>
-              <Link to={`reviews`} className={css.link}>Reviews</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
+    <div>
+      <NavLink className={css.back_link} to={goBack.current}>
+        <RiArrowGoBackFill />&nbsp;Go Back
+      </NavLink>
+      {isError && <ErrorMessage />}
+      {isLoading && <Loader />}
+      {movie && (
+        <div className={css.film_container} key={movie.id}>
+          <div className={css.imgWrapper}><img 
+            src={
+              movie.poster_path
+                ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                : defaultImg
+            }
+            width={250}
+            alt="poster"
+          />
+            </div>
 
-      <Suspense fallback={<p>Loading...</p>}>
-        <Routes>
-          <Route path="cast" element={<MovieCast />} />
-          <Route path="reviews" element={<MovieReviews />} />
-        </Routes>
-      </Suspense>
+          <div className={css.info_part}>
+            <h2>
+              {movie.title}({getYear(movie.release_date)})
+            </h2>
+            <p>User Score: {movie.vote_average}</p>
+            <h3>Overview</h3>
+            <p>{movie.overview}</p>
+            <h3>Genres</h3>
+            <p>
+              {movie.genres.map(genre => (
+                <span key={genre.id}>{genre.name} </span>
+              ))}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <h3 className={css.add_title}>Additional Information</h3>
+      <ul className={css.addition}>
+        <li>
+          <NavLink to="cast">Cast</NavLink>
+        </li>
+        <li>
+          <NavLink to="reviews">Reviews</NavLink>
+        </li>
+      </ul>
+
+      <Outlet />
     </div>
   );
-};
+}
 
 export default MovieDetailsPage;

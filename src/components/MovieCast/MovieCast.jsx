@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import css from './MovieCast.module.css';
+import { useLocation, useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+
 import { getCastById } from '../../api/movies-api';
+import { defaultImg } from '../../api/helpers'
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Loader from '../../components/Loader/Loader';
+import css from './MovieCast.module.css';
 
-const MovieCast = () => {
+
+export default function MovieCast() {
   const { movieId } = useParams();
   const [cast, setCast] = useState(null);
   const [isError, setIsError] = useState(false);
+  const location = useLocation();
+  const goBack = useRef(location?.state ?? '/movies');
 
   useEffect(() => {
     if (!movieId) return;
@@ -22,7 +27,6 @@ const MovieCast = () => {
         setIsError(true);
       }
     }
-
     fetchCastById();
   }, [movieId]);
 
@@ -50,7 +54,7 @@ const MovieCast = () => {
                 src={
                   actor.profile_path
                     ? `https://image.tmdb.org/t/p/w500/${actor.profile_path}`
-                    : 'https://via.placeholder.com/160x240?text=No+Image'
+                    : defaultImg
                 }
                 width={160}
                 alt="actor"
@@ -65,6 +69,4 @@ const MovieCast = () => {
       </div>
     </div>
   );
-};
-
-export default MovieCast;
+}

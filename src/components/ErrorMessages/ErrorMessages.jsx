@@ -1,7 +1,6 @@
-import React from 'react';
 import css from './ErrorMessage.module.css';
 
-const ErrorMessage = () => {
+const ErrorMessage =()=> {
   return (
     <div>
       <p className={css.network_mistake}>
@@ -9,6 +8,6 @@ const ErrorMessage = () => {
       </p>
     </div>
   );
-};
+}
 
 export default ErrorMessage;

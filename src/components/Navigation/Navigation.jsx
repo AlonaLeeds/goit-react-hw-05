@@ -1,14 +1,15 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
-import css from './Navigation.module.css';
-import { IoHomeSharp } from "react-icons/io5";
+import clsx from 'clsx';
+import { IoHomeSharp } from "react-icons/io5"; 
 import { TbMovie } from "react-icons/tb";
+import css from './Navigation.module.css';
+
 
 const getLinkClass = ({ isActive }) => {
-  return isActive ? `${css.link} ${css.active}` : css.link;
+  return clsx(css.link, isActive && css.active);
 };
 
-const Navigation = () => {
+const Navigation=() =>{
   return (
     <nav className={css.navigator}>
       <ul className={css.container}>
@@ -19,12 +20,12 @@ const Navigation = () => {
         </li>
         <li>
           <NavLink to="/movies" className={getLinkClass}>
-            <TbMovie /> &nbsp;Movies
+           <TbMovie /> &nbsp;Movies
           </NavLink>
         </li>
       </ul>
     </nav>
   );
-};
+}
 
 export default Navigation;

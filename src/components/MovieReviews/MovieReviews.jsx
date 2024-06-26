@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import css from './MovieReviews.module.css';
+import { useLocation, useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+
 import { getReviewsById } from '../../api/movies-api';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Loader from '../../components/Loader/Loader';
+import css from './MovieReviews.module.css';
 
-const MovieReviews = () => {
+
+const MovieReviews =()=> {
   const { movieId } = useParams();
   const [reviews, setReviews] = useState(null);
   const [isError, setIsError] = useState(false);
+  const location = useLocation();
+  const goBack = useRef(location?.state ?? '/movies');
 
   useEffect(() => {
     if (!movieId) return;
@@ -22,7 +26,6 @@ const MovieReviews = () => {
         setIsError(true);
       }
     }
-
     fetchReviewsById();
   }, [movieId]);
 
@@ -30,7 +33,7 @@ const MovieReviews = () => {
     return <ErrorMessage />;
   }
 
-  if (!reviews) {
+  if (reviews === null) {
     return <Loader />;
   }
 
@@ -45,12 +48,12 @@ const MovieReviews = () => {
         {reviews.map(review => (
           <li key={review.id}>
             <h3>Author: {review.author}</h3>
-            <p>{review.content}</p>
+            <p> {review.content}</p>
           </li>
         ))}
       </ul>
     </div>
   );
-};
+}
 
 export default MovieReviews;

@@ -1,33 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import MovieList from '../../components/MovieList/MovieList';
-import css from './HomePage.module.css';
+import { useEffect, useState } from 'react';
 import { getTrendingMovies } from '../../api/movies-api';
+import MovieList from '../../components/MovieList/MovieList';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import Loader from '../../components/Loader/Loader';
+import css from './HomePage.module.css';
 
-const HomePage = () => {
-  const [movies, setMovies] = useState([]);
-  const [error, setError] = useState(null);
+
+const HomePage =()=> {
+  const [trendingMovies, setTrendingMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    const fetchTrendingMovies = async () => {
+    async function fetchTrendMovies() {
       try {
+        setIsLoading(true);
+        setIsError(false);
         const data = await getTrendingMovies();
-        setMovies(data.results);
-      } catch (err) {
-        console.error('Failed to fetch trending movies:', err);
-        setError('Failed to fetch trending movies. Please try again later.');
+        setTrendingMovies(data.results);
+      } catch {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
       }
-    };
+    }
 
-    fetchTrendingMovies();
-  }, []);
+    fetchTrendMovies();
+  }, [setTrendingMovies]);
 
   return (
-    <div className={css.container}>
-      <h1>Trending Movies</h1>
-      {error && <p className={css.error}>{error}</p>}
-      <MovieList movies={movies} />
+    <div>
+      <h1 className={css.home_title}>Trending today</h1>
+      {isLoading && <Loader />}
+      {isError && <ErrorMessage />}
+      {trendingMovies.length > 0 && <MovieList movies={trendingMovies} />}
     </div>
   );
-};
+}
 
 export default HomePage;
